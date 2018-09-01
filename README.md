@@ -1,2 +1,2 @@
-# sina-sso-node
-> Sina sso based on node.
+# weibo-sso-node
+> Weibo sso based on node.
