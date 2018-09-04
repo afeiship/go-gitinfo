@@ -4,7 +4,7 @@
   "description": "Weibo sso based on node.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
