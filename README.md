@@ -5,7 +5,9 @@
 ```js
 import weiboSso from 'weibo-sso';
 
-weiboSso
+weiboSso({ username: 'YOUR_USERNAME', password:'YOUR_PASSWORD' }).then(resp => {
+  // GET THE SUB_COOKIE
+});
 
 ```
 
