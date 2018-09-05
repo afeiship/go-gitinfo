@@ -1,6 +1,9 @@
 var weiboSSO = require('../index');
 
 
-weiboSSO().then(resp=>{
+weiboSSO({
+  username: 'YOUR_USERNAME',
+  password:'YOUR_PASSWORD'
+}).then(resp => {
   console.log(resp);
 })
