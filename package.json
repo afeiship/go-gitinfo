@@ -26,8 +26,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "next-json": "github:afeiship/next-json",
+    "next-node-base64": "github:afeiship/next-node-base64",
     "next-param": "github:afeiship/next-param",
     "next-random": "github:afeiship/next-random",
     "node-base64": "github:afeiship/node-base64"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
   }
 }
