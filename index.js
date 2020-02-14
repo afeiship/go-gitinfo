@@ -1,14 +1,14 @@
 // next packages:
-require('next-js-core2');
-require("next-node-base64");
-require('next-random');
-require('next-param');
-require('next-json');
+require('@feizheng/next-js-core2');
+require('@feizheng/next-node-base64');
+require('@feizheng/next-random');
+require('@feizheng/next-param');
+require('@feizheng/next-json');
+require('@feizheng/next-node-fetch');
 
-
-var prelogin = require("./lib/prelogin");
-var login = require("./lib/login");
-var weibosso = require("./lib/weibo-sso");
+var prelogin = require('./lib/prelogin');
+var login = require('./lib/login');
+var weibosso = require('./lib/weibo-sso');
 
 module.exports = function(inOptions) {
   return new Promise(function(resolve, reject) {

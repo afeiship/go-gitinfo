@@ -1,5 +1,5 @@
 {
-  "name": "weibo-sso-node",
+  "name": "@feizheng/weibo-sso-node",
   "version": "1.0.0",
   "description": "Weibo sso based on node.",
   "main": "index.js",
@@ -24,14 +24,18 @@
   },
   "homepage": "https://github.com/afeiship/weibo-sso-node#readme",
   "dependencies": {
-    "axios": "^0.18.0",
-    "next-json": "github:afeiship/next-json",
-    "next-node-base64": "github:afeiship/next-node-base64",
-    "next-param": "github:afeiship/next-param",
-    "next-random": "github:afeiship/next-random",
-    "node-base64": "github:afeiship/node-base64"
+    "@feizheng/next-json": "^1.0.0",
+    "@feizheng/next-node-base64": "^1.0.0",
+    "@feizheng/next-node-fetch": "^1.2.3",
+    "@feizheng/next-param": "^1.1.0",
+    "@feizheng/next-random": "^1.0.0",
+    "@feizheng/sina-sso-encoder": "^1.0.0",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "prettier": "^1.18.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
