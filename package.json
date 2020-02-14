@@ -1,6 +1,6 @@
 {
   "name": "@feizheng/weibo-sso-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
   "scripts": {
