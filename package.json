@@ -29,8 +29,7 @@
     "@feizheng/next-node-fetch": "^1.2.3",
     "@feizheng/next-param": "^1.1.0",
     "@feizheng/next-random": "^1.0.0",
-    "@feizheng/sina-sso-encoder": "^1.0.0",
-    "axios": "^0.19.2"
+    "@feizheng/sina-sso-encoder": "^1.0.0"
   },
   "devDependencies": {
     "prettier": "^1.18.2"

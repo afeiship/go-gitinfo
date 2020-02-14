@@ -2,8 +2,8 @@ var weiboSSO = require('../index');
 
 
 weiboSSO({
-  username: '17607171608',
-  password: 'Fei0.123'
+  username: 'YOUR_USERNAME',
+  password: 'YOUR_PASSWORD'
 }).then(
   (resp) => {
     console.log(resp);
