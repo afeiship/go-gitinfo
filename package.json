@@ -1,5 +1,5 @@
 {
-  "name": "@afeiship/weibo-sso-node",
+  "name": "@feizheng/weibo-sso-node",
   "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
@@ -35,6 +35,6 @@
     "prettier": "^1.18.2"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   }
 }
