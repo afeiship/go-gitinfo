@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "node test/test.js"
   },
