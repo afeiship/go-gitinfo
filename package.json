@@ -1,5 +1,5 @@
 {
-  "name": "@ssokit/weibo-sso-node",
+  "name": "@afeiship/weibo-sso-node",
   "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
