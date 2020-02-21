@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
-  "private": true,
   "scripts": {
     "test": "node test/test.js"
   },
@@ -36,6 +35,6 @@
     "prettier": "^1.18.2"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com"
   }
 }
