@@ -1,5 +1,5 @@
 {
-  "name": "@feizheng/weibo-sso-node",
+  "name": "@feizheng/sso-weibo-node",
   "version": "1.0.1",
   "description": "Weibo sso based on node.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/afeiship/weibo-sso-node.git"
+    "url": "git+https://github.com/afeiship/sso-weibo-node.git"
   },
   "keywords": [
     "weibo",
@@ -20,9 +20,9 @@
   "author": "afei",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/afeiship/weibo-sso-node/issues"
+    "url": "https://github.com/afeiship/sso-weibo-node/issues"
   },
-  "homepage": "https://github.com/afeiship/weibo-sso-node#readme",
+  "homepage": "https://github.com/afeiship/sso-weibo-node#readme",
   "dependencies": {
     "@feizheng/next-json": "^1.0.0",
     "@feizheng/next-node-base64": "^1.0.0",
