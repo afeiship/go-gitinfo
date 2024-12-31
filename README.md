@@ -1,19 +1,14 @@
-# sso-weibo-node
-> Weibo sso based on node.
+# go-gitinfo
+> Gitinfo for golang.
 
 ## installation
-```shell
-npm i @feizheng/sso-weibo-node
+```sh
+go get -u github.com/afeiship/go-gitinfo
 ```
 
 ## usage
-```js
-import weiboSso from '@feizheng/sso-weibo-node';
+```go
+package main
 
-weiboSso({ username: 'YOUR_USERNAME', password:'YOUR_PASSWORD' }).then(resp => {
-  // GET THE SUB_COOKIE
-});
+// code here
 ```
-
-## resources
-- http://www.itboth.com/d/IV3QVb/node.js

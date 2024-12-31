@@ -1,40 +1,11 @@
 {
-  "name": "@feizheng/sso-weibo-node",
+  "name": "go-gitinfo",
+  "private": true,
   "version": "1.0.0",
-  "description": "Weibo sso based on node.",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test/test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/afeiship/sso-weibo-node.git"
-  },
-  "keywords": [
-    "weibo",
-    "sina",
-    "sso",
-    "login",
-    "sigin"
-  ],
-  "author": "afei",
+  "description": "Gitinfo for golang.",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/afeiship/sso-weibo-node/issues"
-  },
-  "homepage": "https://github.com/afeiship/sso-weibo-node#readme",
-  "dependencies": {
-    "@feizheng/next-json": "^1.0.2",
-    "@feizheng/next-node-base64": "^1.0.1",
-    "@feizheng/next-node-fetch": "^1.2.6",
-    "@feizheng/next-param": "^2.0.0",
-    "@feizheng/next-random": "^1.0.2",
-    "@feizheng/sina-sso-encoder": "^1.0.0"
-  },
-  "devDependencies": {
-    "prettier": "^2.0.5"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+  "scripts": {
+    "test": "go test __tests__/*.go -v",
+    "release": "release-it"
   }
 }

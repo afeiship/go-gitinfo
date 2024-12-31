@@ -1,0 +1,23 @@
+{
+  "git": {
+    "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}",
+    "requireCleanWorkingDir": false,
+    "requireBranch": false,
+    "requireUpstream": true,
+    "requireCommits": false,
+    "tagName": "v${version}"
+  },
+  "hooks": {
+    "before:init": ["git fetch --tags"],
+    "after:init": ["npm run test", "t2k"]
+  },
+  "github": {
+    "release": true,
+    "releaseName": "Release ${version}",
+    "skipChecks": true
+  },
+  "npm": {
+    "publish": false,
+    "skipChecks": true
+  }
+}
