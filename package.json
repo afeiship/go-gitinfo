@@ -1,7 +1,7 @@
 {
   "name": "go-gitinfo",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Gitinfo for golang.",
   "license": "MIT",
   "scripts": {
