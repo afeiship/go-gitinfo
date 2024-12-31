@@ -14,7 +14,10 @@ type GitUrl struct {
 	Repo        string `json:"repo"`
 	SshUrl      string `json:"ssh_url"`
 	HttpsUrl    string `json:"https_url"`
-	ActionUrl   string `json:"action_url"`
+	ActionsUrl  string `json:"actions_url"`
+	CommitsUrl  string `json:"commits_url"`
+	TagsUrl     string `json:"tags_url"`
+	PagesUrl    string `json:"pages_url"`
 	Url         string `json:"url"`
 }
 
@@ -49,7 +52,10 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.SshUrl = "git@github.com:" + match[2] + "/" + match[3] + ".git"
 			gitUrl.HttpsUrl = "https://github.com/" + match[2] + "/" + match[3] + ".git"
 			gitUrl.Url = "https://github.com/" + match[2] + "/" + match[3]
-			gitUrl.ActionUrl = gitUrl.Url + "/actions"
+			gitUrl.ActionsUrl = gitUrl.Url + "/actions"
+			gitUrl.CommitsUrl = gitUrl.Url + "/commits"
+			gitUrl.TagsUrl = gitUrl.Url + "/tags"
+			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", match[2], match[3])
 			return &gitUrl, nil
 		}
 	}
@@ -76,7 +82,10 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.SshUrl = "git@" + match[2] + ":" + match[3] + "/" + match[4] + ".git"
 			gitUrl.HttpsUrl = "https://" + match[2] + "/" + match[3] + "/" + match[4] + ".git"
 			gitUrl.Url = "https://" + match[2] + "/" + match[3] + "/" + match[4]
-			gitUrl.ActionUrl = gitUrl.Url + "/-/pipelines"
+			gitUrl.ActionsUrl = gitUrl.Url + "/-/pipelines"
+			gitUrl.CommitsUrl = gitUrl.Url + "/-/commits"
+			gitUrl.TagsUrl = gitUrl.Url + "/-/tags"
+			gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", match[3], match[2], match[4])
 			return &gitUrl, nil
 		}
 	}
