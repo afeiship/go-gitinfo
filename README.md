@@ -27,7 +27,7 @@ func main() {
   "current_branch": "main",
   "hash": "bd457285054d8f95f9d4b4840c76873b5d549569",
   "short_hash": "bd45728",
-  "url_meta": {
+  "meta": {
     "original_url": "git@github.com:afeiship/go-gitinfo.git",
     "protocol": "https",
     "hostname": "github.com",

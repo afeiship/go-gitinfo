@@ -11,7 +11,7 @@ type GitInfo struct {
 	CurrentBranch string `json:"current_branch"`
 	Hash          string `json:"hash"`
 	ShortHash     string `json:"short_hash"`
-	UrlMeta       GitUrl `json:"url_meta"`
+	Meta          GitUrl `json:"meta"`
 }
 
 func GetGitInfo() GitInfo {
@@ -31,7 +31,7 @@ func GetGitInfo() GitInfo {
 	gitInfo.ShortHash = shortHash
 
 	gitUrls, _ := ParseGitUrl(originUrl)
-	gitInfo.UrlMeta = *gitUrls
+	gitInfo.Meta = *gitUrls
 
 	return gitInfo
 }
