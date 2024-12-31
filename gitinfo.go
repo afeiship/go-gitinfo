@@ -36,6 +36,7 @@ func GetGitInfo() GitInfo {
 	return gitInfo
 }
 
+// ---- private functions ----
 func runShell(command string) string {
 	execCmd := exec.Command("bash", "-c", command)
 	out, err := execCmd.Output()
