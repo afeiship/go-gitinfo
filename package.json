@@ -1,11 +1,18 @@
 {
   "name": "go-gitinfo",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gitinfo for golang.",
   "license": "MIT",
   "scripts": {
     "test": "go test __tests__/*.go -v",
     "release": "release-it"
-  }
+  },
+  "keywords": [
+    "git",
+    "go",
+    "golang",
+    "info",
+    "library"
+  ]
 }
