@@ -14,6 +14,7 @@ type GitUrl struct {
 	Repo        string `json:"repo"`
 	SshUrl      string `json:"ssh_url"`
 	HttpsUrl    string `json:"https_url"`
+	ActionUrl   string `json:"action_url"`
 	Url         string `json:"url"`
 }
 
@@ -48,6 +49,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.SshUrl = "git@github.com:" + match[2] + "/" + match[3] + ".git"
 			gitUrl.HttpsUrl = "https://github.com/" + match[2] + "/" + match[3] + ".git"
 			gitUrl.Url = "https://github.com/" + match[2] + "/" + match[3]
+			gitUrl.ActionUrl = gitUrl.Url + "/actions"
 			return &gitUrl, nil
 		}
 	}
@@ -74,6 +76,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.SshUrl = "git@" + match[2] + ":" + match[3] + "/" + match[4] + ".git"
 			gitUrl.HttpsUrl = "https://" + match[2] + "/" + match[3] + "/" + match[4] + ".git"
 			gitUrl.Url = "https://" + match[2] + "/" + match[3] + "/" + match[4]
+			gitUrl.ActionUrl = gitUrl.Url + "/-/pipelines"
 			return &gitUrl, nil
 		}
 	}
