@@ -9,9 +9,14 @@ go get -u github.com/afeiship/go-gitinfo
 ## usage
 ```go
 package main
+import (
+	"fmt"
+	"github.com/afeiship/go-gitinfo"
+)
 
 func main() {
-	info := gitinfo.Get()
+	info := gitinfo.GetGitInfo()
+	fmt.Println(info)
 }
 ```
 

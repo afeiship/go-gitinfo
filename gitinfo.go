@@ -14,7 +14,7 @@ type GitInfo struct {
 	UrlMeta       GitUrl `json:"url_meta"`
 }
 
-func Get() GitInfo {
+func GetGitInfo() GitInfo {
 	var gitInfo GitInfo
 
 	originUrl := runShell("git config --get remote.origin.url")
