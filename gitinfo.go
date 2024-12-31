@@ -5,55 +5,33 @@ import (
 	"strings"
 )
 
-// github: git@github.com:afeiship/go-gitinfo.git
-// gitlab: git@git.saybot.net:web_app/rhino-h5.git
-
-type ParseUrlResult struct {
-	GitType  string `json:"git_type"`
-	BaseUrl  string `json:"base_url"`
-	SshUrl   string `json:"ssh_url"`
-	HttpsUrl string `json:"https_url"`
-	RepoUrl  string `json:"repo_url"`
-	Owner    string `json:"owner"`
-	Repo     string `json:"repo"`
-	Hostname string `json:"hostname"`
-}
-
 type GitInfo struct {
 	Name          string `json:"name"`
 	Email         string `json:"email"`
-	Owner         string `json:"owner"`
+	CurrentBranch string `json:"current_branch"`
 	Hash          string `json:"hash"`
 	ShortHash     string `json:"short_hash"`
-	Repo          string `json:"repo"`
-	CurrentBranch string `json:"current_branch"`
-	Hostname      string `json:"hostname"`
-	GitType       string `json:"git_type"`
-	OriginUrl     string `json:"origin_url"`
-	BaseUrl       string `json:"base_url"`
-	SshUrl        string `json:"ssh_url"`
-	HttpsUrl      string `json:"https_url"`
-	RepoUrl       string `json:"repo_url"`
+	UrlMeta       GitUrl `json:"url_meta"`
 }
 
 func Get() GitInfo {
 	var gitInfo GitInfo
 
 	originUrl := runShell("git config --get remote.origin.url")
+	name := runShell("git config user.name")
+	email := runShell("git config user.email")
 	currentBranch := runShell("git rev-parse --abbrev-ref HEAD")
 	hash := runShell("git rev-parse --verify HEAD")
 	shortHash := runShell("git rev-parse --short HEAD")
-	email := runShell("git config user.email")
-	name := runShell("git config user.name")
 
-	// urlInfo := ParseGitUrl(originUrl)
-
-	gitInfo.CurrentBranch = currentBranch
-	gitInfo.OriginUrl = originUrl
-	gitInfo.Hash = hash
-	gitInfo.ShortHash = shortHash
 	gitInfo.Email = email
 	gitInfo.Name = name
+	gitInfo.CurrentBranch = currentBranch
+	gitInfo.Hash = hash
+	gitInfo.ShortHash = shortHash
+
+	gitUrls, _ := ParseGitUrl(originUrl)
+	gitInfo.UrlMeta = *gitUrls
 
 	return gitInfo
 }

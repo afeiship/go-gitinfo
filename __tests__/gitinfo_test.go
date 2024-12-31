@@ -1,6 +1,8 @@
 package gitinfo_test
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/afeiship/go-gitinfo"
 	"testing"
 )
@@ -40,4 +42,10 @@ func TestParseUrl(f *testing.T) {
 	if info22.Hostname != "github.com" || info22.Owner != "afeiship" || info22.Repo != "nx" {
 		f.Error("TestParseUrl failed")
 	}
+}
+
+func TestGetGitInfo(f *testing.T) {
+	info := gitinfo.Get()
+	jsonInfo, _ := json.Marshal(info)
+	fmt.Println("jsonInfo: ", string(jsonInfo))
 }
