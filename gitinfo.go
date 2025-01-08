@@ -1,6 +1,7 @@
 package gitinfo
 
 import (
+	"errors"
 	"os/exec"
 	"strings"
 )
@@ -14,7 +15,7 @@ type GitInfo struct {
 	Meta          GitUrl `json:"meta"`
 }
 
-func GetGitInfo() GitInfo {
+func GetGitInfo() (error, *GitInfo) {
 	var gitInfo GitInfo
 
 	originUrl := runShell("git config --get remote.origin.url")
@@ -23,6 +24,10 @@ func GetGitInfo() GitInfo {
 	currentBranch := runShell("git rev-parse --abbrev-ref HEAD")
 	hash := runShell("git rev-parse --verify HEAD")
 	shortHash := runShell("git rev-parse --short HEAD")
+
+	if originUrl == "" {
+		return errors.New("no remote origin url found"), &gitInfo
+	}
 
 	gitInfo.Email = email
 	gitInfo.Name = name
@@ -33,7 +38,7 @@ func GetGitInfo() GitInfo {
 	gitUrls, _ := ParseGitUrl(originUrl)
 	gitInfo.Meta = *gitUrls
 
-	return gitInfo
+	return nil, &gitInfo
 }
 
 // ---- private functions ----

@@ -56,7 +56,7 @@ func TestParseUrl(f *testing.T) {
 }
 
 func TestGetGitInfo(f *testing.T) {
-	info := gitinfo.GetGitInfo()
+	_, info := gitinfo.GetGitInfo()
 	jsonInfo, _ := json.Marshal(info)
 	fmt.Println("jsonInfo: ", string(jsonInfo))
 }
