@@ -30,13 +30,15 @@ func TestParseUrl(f *testing.T) {
 	url14 := "git@git.saybot.net:aric.zheng/frontend-ci.git"
 	info14, _ := gitinfo.ParseGitUrl(url14)
 	jsonInfo, _ = json.Marshal(info14)
-	fmt.Println("jsonInfo14: ", string(jsonInfo))
+	if info14.Hostname != "git.saybot.net" || info14.Owner != "aric.zheng" || info14.Repo != "frontend-ci" {
+		f.Error("TestParseUrl failed")
+	}
 
 	// gitlab https
 	url12 := "https://git.saybot.net/web_app/rhino-h5.git"
 	info12, _ := gitinfo.ParseGitUrl(url12)
 	jsonInfo, _ = json.Marshal(info12)
-	fmt.Println("jsonInfo12: ", string(jsonInfo))
+	//fmt.Println("jsonInfo12: ", string(jsonInfo))
 	if info12.Hostname != "git.saybot.net" || info11.Owner != "web_app" || info11.Repo != "rhino-h5" {
 		f.Error("TestParseUrl failed")
 	}

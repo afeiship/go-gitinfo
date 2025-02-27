@@ -23,7 +23,7 @@ type GitUrl struct {
 
 var reGithub = regexp.MustCompile(`^(git@github\.com[:/])?([\w-]+)/([\w-]+)(\.git)?$`)
 var reGitHubHttps = regexp.MustCompile(`^(https://github\.com/)([\w-]+)/([\w-]+)(\.git)?$`)
-var reGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([\w-]+)/(.*?)(\.git)?$`)
+var reGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([.\w-]+)/(.*?)(\.git)?$`)
 var reGitlabHttps = regexp.MustCompile(`^(https://(git\.saybot\.net|lab\.com)/)([\w-]+)/(.*?)(\.git)?$`)
 
 func ParseGitUrl(originalUrl string) (*GitUrl, error) {
