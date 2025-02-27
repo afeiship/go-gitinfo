@@ -66,6 +66,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 
 		if strings.HasPrefix(originalUrl, "git@") {
 			match = reGitlab.FindStringSubmatch(originalUrl)
+			fmt.Println("just match: ", match)
 			gitUrl.Protocol = "ssh"
 		} else {
 			match = reGitlabHttps.FindStringSubmatch(originalUrl)
