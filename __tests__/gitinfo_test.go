@@ -98,8 +98,8 @@ func TestParseUrl(t *testing.T) {
 			if info.Owner != tt.owner {
 				t.Errorf("Owner = %v, want %v", info.Owner, tt.owner)
 			}
-			if info.Repo != tt.repo {
-				t.Errorf("Repo = %v, want %v", info.Repo, tt.repo)
+			if info.RepoName != fmt.Sprintf("%s/%s", tt.owner, tt.repo) {
+				t.Errorf("RepoName = %v, want %v", info.RepoName, fmt.Sprintf("%s/%s", tt.owner, tt.repo))
 			}
 			if info.Protocol != tt.protocol {
 				t.Errorf("Protocol = %v, want %v", info.Protocol, tt.protocol)

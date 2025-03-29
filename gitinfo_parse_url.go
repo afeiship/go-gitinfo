@@ -83,6 +83,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.Hostname = match[2]
 			gitUrl.Owner = match[3]
 			gitUrl.Repo = match[4]
+			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.BaseUrl = "https://" + match[2]
 			gitUrl.SshUrl = "git@" + match[2] + ":" + match[3] + "/" + match[4] + ".git"
 			gitUrl.HttpsUrl = "https://" + match[2] + "/" + match[3] + "/" + match[4] + ".git"
