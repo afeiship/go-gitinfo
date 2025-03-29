@@ -8,57 +8,112 @@ import (
 	"github.com/afeiship/go-gitinfo"
 )
 
-func TestParseUrl(f *testing.T) {
-	var jsonInfo []byte
-
-	url11 := "git@git.saybot.net:web_app/rhino-h5.git"
-	info11, _ := gitinfo.ParseGitUrl(url11)
-	// jsonInfo, _ := json.Marshal(info11)
-	// fmt.Println("jsonInfo11: ", string(jsonInfo))
-	if info11.Hostname != "git.saybot.net" || info11.Owner != "web_app" || info11.Repo != "rhino-h5" {
-		f.Error("TestParseUrl failed")
+func TestParseUrl(t *testing.T) {
+	// Test GitLab SSH URLs
+	tests := []struct {
+		name     string
+		url      string
+		hostname string
+		owner    string
+		repo     string
+		protocol string
+		baseUrl  string
+	}{
+		{
+			name:     "GitLab SSH - Simple Path",
+			url:      "git@git.saybot.net:web_app/rhino-h5.git",
+			hostname: "git.saybot.net",
+			owner:    "web_app",
+			repo:     "rhino-h5",
+			protocol: "https",
+			baseUrl:  "https://git.saybot.net",
+		},
+		{
+			name:     "GitLab SSH - Nested Path",
+			url:      "git@git.saybot.net:ACE/courseware/pptWebPlayer.git",
+			hostname: "git.saybot.net",
+			owner:    "ACE",
+			repo:     "courseware/pptWebPlayer",
+			protocol: "https",
+			baseUrl:  "https://git.saybot.net",
+		},
+		{
+			name:     "GitLab SSH - Username with Dot",
+			url:      "git@git.saybot.net:aric.zheng/frontend-ci.git",
+			hostname: "git.saybot.net",
+			owner:    "aric.zheng",
+			repo:     "frontend-ci",
+			protocol: "https",
+			baseUrl:  "https://git.saybot.net",
+		},
+		{
+			name:     "GitLab HTTPS",
+			url:      "https://git.saybot.net/web_app/rhino-h5.git",
+			hostname: "git.saybot.net",
+			owner:    "web_app",
+			repo:     "rhino-h5",
+			protocol: "https",
+			baseUrl:  "https://git.saybot.net",
+		},
+		{
+			name:     "GitHub SSH",
+			url:      "git@github.com:afeiship/nx.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+			protocol: "https",
+			baseUrl:  "https://github.com",
+		},
+		{
+			name:     "GitHub HTTPS",
+			url:      "https://github.com/afeiship/nx.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+			protocol: "https",
+			baseUrl:  "https://github.com",
+		},
+		{
+			name:     "GitHub HTTPS without .git",
+			url:      "https://github.com/afeiship/nx",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+			protocol: "https",
+			baseUrl:  "https://github.com",
+		},
 	}
 
-	url13 := "git@git.saybot.net:ACE/courseware/pptWebPlayer.git"
-	info13, _ := gitinfo.ParseGitUrl(url13)
-	jsonInfo, _ = json.Marshal(info13)
-	fmt.Println("jsonInfo13: ", string(jsonInfo))
-	if info13.Hostname != "git.saybot.net" || info13.Owner != "ACE" || info13.Repo != "courseware/pptWebPlayer" {
-		f.Error("TestParseUrl failed")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := gitinfo.ParseGitUrl(tt.url)
+			if err != nil {
+				t.Errorf("ParseGitUrl(%s) error = %v", tt.url, err)
+				return
+			}
+
+			if info.Hostname != tt.hostname {
+				t.Errorf("Hostname = %v, want %v", info.Hostname, tt.hostname)
+			}
+			if info.Owner != tt.owner {
+				t.Errorf("Owner = %v, want %v", info.Owner, tt.owner)
+			}
+			if info.Repo != tt.repo {
+				t.Errorf("Repo = %v, want %v", info.Repo, tt.repo)
+			}
+			if info.Protocol != tt.protocol {
+				t.Errorf("Protocol = %v, want %v", info.Protocol, tt.protocol)
+			}
+			if info.BaseUrl != tt.baseUrl {
+				t.Errorf("BaseUrl = %v, want %v", info.BaseUrl, tt.baseUrl)
+			}
+		})
 	}
 
-	url14 := "git@git.saybot.net:aric.zheng/frontend-ci.git"
-	info14, _ := gitinfo.ParseGitUrl(url14)
-	jsonInfo, _ = json.Marshal(info14)
-	if info14.Hostname != "git.saybot.net" || info14.Owner != "aric.zheng" || info14.Repo != "frontend-ci" {
-		f.Error("TestParseUrl failed")
-	}
-
-	// gitlab https
-	url12 := "https://git.saybot.net/web_app/rhino-h5.git"
-	info12, _ := gitinfo.ParseGitUrl(url12)
-	jsonInfo, _ = json.Marshal(info12)
-	//fmt.Println("jsonInfo12: ", string(jsonInfo))
-	if info12.Hostname != "git.saybot.net" || info11.Owner != "web_app" || info11.Repo != "rhino-h5" {
-		f.Error("TestParseUrl failed")
-	}
-
-	// github
-	url21 := "git@github.com:afeiship/nx.git"
-	info21, _ := gitinfo.ParseGitUrl(url21)
-	// jsonInfo, _ = json.Marshal(info21)
-	// fmt.Println("jsonInfo21: ", string(jsonInfo))
-	if info21.Hostname != "github.com" || info21.Owner != "afeiship" || info21.Repo != "nx" {
-		f.Error("TestParseUrl failed")
-	}
-
-	// github
-	url22 := "https://github.com/afeiship/nx.git"
-	info22, _ := gitinfo.ParseGitUrl(url22)
-	// jsonInfo, _ = json.Marshal(info22)
-	// fmt.Println("jsonInfo22: ", string(jsonInfo))
-	if info22.Hostname != "github.com" || info22.Owner != "afeiship" || info22.Repo != "nx" {
-		f.Error("TestParseUrl failed")
+	// Test invalid URL
+	_, err := gitinfo.ParseGitUrl("invalid-url")
+	if err == nil {
+		t.Error("Expected error for invalid URL, got nil")
 	}
 }
 
