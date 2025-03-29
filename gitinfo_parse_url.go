@@ -12,6 +12,7 @@ type GitUrl struct {
 	Hostname    string `json:"hostname"`
 	Owner       string `json:"owner"`
 	Repo        string `json:"repo"`
+	RepoName    string `json:"repo_name"`
 	SshUrl      string `json:"ssh_url"`
 	HttpsUrl    string `json:"https_url"`
 	ActionsUrl  string `json:"actions_url"`
@@ -50,6 +51,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.Hostname = "github.com"
 			gitUrl.Owner = match[2]
 			gitUrl.Repo = match[3]
+			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.BaseUrl = "https://github.com"
 			gitUrl.SshUrl = "git@github.com:" + match[2] + "/" + match[3] + ".git"
 			gitUrl.HttpsUrl = "https://github.com/" + match[2] + "/" + match[3] + ".git"
