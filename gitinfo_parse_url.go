@@ -53,12 +53,12 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.Repo = match[3]
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.BaseUrl = "https://github.com"
-			gitUrl.SshUrl = "git@github.com:" + match[2] + "/" + match[3] + ".git"
-			gitUrl.HttpsUrl = "https://github.com/" + match[2] + "/" + match[3] + ".git"
-			gitUrl.Url = "https://github.com/" + match[2] + "/" + match[3]
-			gitUrl.ActionsUrl = gitUrl.Url + "/actions"
-			gitUrl.CommitsUrl = gitUrl.Url + "/commits"
-			gitUrl.TagsUrl = gitUrl.Url + "/tags"
+			gitUrl.SshUrl = fmt.Sprintf("git@github.com:%s/%s.git", match[2], match[3])
+			gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", match[2], match[3])
+			gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", match[2], match[3])
+			gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
+			gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
+			gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
 			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", match[2], match[3])
 			return &gitUrl, nil
 		}
@@ -78,19 +78,18 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 
 		if match != nil {
 			// 如果是 GitLab HTTPS URL
-			gitUrl.Url = "https://" + match[2] + "/" + match[3] + "/" + match[4]
 			gitUrl.Protocol = "https"
 			gitUrl.Hostname = match[2]
 			gitUrl.Owner = match[3]
 			gitUrl.Repo = match[4]
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.BaseUrl = "https://" + match[2]
-			gitUrl.SshUrl = "git@" + match[2] + ":" + match[3] + "/" + match[4] + ".git"
-			gitUrl.HttpsUrl = "https://" + match[2] + "/" + match[3] + "/" + match[4] + ".git"
-			gitUrl.Url = "https://" + match[2] + "/" + match[3] + "/" + match[4]
-			gitUrl.ActionsUrl = gitUrl.Url + "/-/pipelines"
-			gitUrl.CommitsUrl = gitUrl.Url + "/-/commits"
-			gitUrl.TagsUrl = gitUrl.Url + "/-/tags"
+			gitUrl.BaseUrl = fmt.Sprintf("https://%s", match[2])
+			gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", match[2], match[3], match[4])
+			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", match[2], match[3], match[4])
+			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", match[2], match[3], match[4])
+			gitUrl.ActionsUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
+			gitUrl.CommitsUrl = fmt.Sprintf("%s/-/commits", gitUrl.Url)
+			gitUrl.TagsUrl = fmt.Sprintf("%s/-/tags", gitUrl.Url)
 			gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", match[3], match[2], match[4])
 			return &gitUrl, nil
 		}
