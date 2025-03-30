@@ -12,6 +12,7 @@ type GitInfo struct {
 	CurrentBranch string `json:"current_branch"`
 	Hash          string `json:"hash"`
 	ShortHash     string `json:"short_hash"`
+	IsGithub      bool   `json:"is_github"`
 	Meta          GitUrl `json:"meta"`
 }
 
@@ -34,8 +35,8 @@ func GetGitInfo() (error, *GitInfo) {
 	gitInfo.CurrentBranch = currentBranch
 	gitInfo.Hash = hash
 	gitInfo.ShortHash = shortHash
-
 	gitUrls, _ := ParseGitUrl(originUrl)
+	gitInfo.IsGithub = gitUrls.Hostname == "github.com"
 	gitInfo.Meta = *gitUrls
 
 	return nil, &gitInfo
