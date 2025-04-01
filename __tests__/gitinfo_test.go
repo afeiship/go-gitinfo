@@ -107,6 +107,16 @@ func TestParseUrl(t *testing.T) {
 			if info.BaseUrl != tt.baseUrl {
 				t.Errorf("BaseUrl = %v, want %v", info.BaseUrl, tt.baseUrl)
 			}
+			// Check ActionUrl based on repository type
+			expectedActionUrl := ""
+			if info.Hostname == "github.com" {
+				expectedActionUrl = fmt.Sprintf("%s/actions", info.Url)
+			} else {
+				expectedActionUrl = fmt.Sprintf("%s/-/pipelines", info.Url)
+			}
+			if info.ActionUrl != expectedActionUrl {
+				t.Errorf("ActionUrl = %v, want %v", info.ActionUrl, expectedActionUrl)
+			}
 		})
 	}
 

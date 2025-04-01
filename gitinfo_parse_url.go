@@ -19,6 +19,7 @@ type GitUrl struct {
 	CommitsUrl  string `json:"commits_url"`
 	TagsUrl     string `json:"tags_url"`
 	PagesUrl    string `json:"pages_url"`
+	ActionUrl   string `json:"action_url"`
 	Url         string `json:"url"`
 	BaseUrl     string `json:"base_url"`
 }
@@ -57,6 +58,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", match[2], match[3])
 			gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", match[2], match[3])
 			gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
+			gitUrl.ActionUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
 			gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
 			gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
 			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", match[2], match[3])
@@ -88,6 +90,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", match[2], match[3], match[4])
 			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", match[2], match[3], match[4])
 			gitUrl.ActionsUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
+			gitUrl.ActionUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
 			gitUrl.CommitsUrl = fmt.Sprintf("%s/-/commits", gitUrl.Url)
 			gitUrl.TagsUrl = fmt.Sprintf("%s/-/tags", gitUrl.Url)
 			gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", match[3], match[2], match[4])
