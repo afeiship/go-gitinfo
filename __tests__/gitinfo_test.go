@@ -114,8 +114,8 @@ func TestParseUrl(t *testing.T) {
 			} else {
 				expectedActionUrl = fmt.Sprintf("%s/-/pipelines", info.Url)
 			}
-			if info.ActionUrl != expectedActionUrl {
-				t.Errorf("ActionUrl = %v, want %v", info.ActionUrl, expectedActionUrl)
+			if info.ActionsUrl != expectedActionUrl {
+				t.Errorf("ActionUrl = %v, want %v", info.ActionsUrl, expectedActionUrl)
 			}
 		})
 	}
