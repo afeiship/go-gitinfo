@@ -24,8 +24,8 @@ type GitUrl struct {
 	BaseUrl     string `json:"base_url"`
 }
 
-var reGithub = regexp.MustCompile(`^(git@github\.com[:/])?([\w-]+)/([\w-]+)(\.git)?$`)
-var reGitHubHttps = regexp.MustCompile(`^(https://github\.com/)([\w-]+)/([\w-]+)(\.git)?$`)
+var reGithub = regexp.MustCompile(`^(git@github\.com[:/])?([\w.-]+)/([\w.-]+)(\.git)?$`)
+var reGitHubHttps = regexp.MustCompile(`^(https://github\.com/)([\w.-]+)/([\w.-]+)(\.git)?$`)
 var reGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([.\w-]+)/(.*?)(\.git)?$`)
 var reGitlabHttps = regexp.MustCompile(`^(https://(git\.saybot\.net|lab\.com)/)([\w-]+)/(.*?)(\.git)?$`)
 
@@ -51,16 +51,17 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.Protocol = "https"
 			gitUrl.Hostname = "github.com"
 			gitUrl.Owner = match[2]
-			gitUrl.Repo = match[3]
+			// 去掉 .git 后缀
+			gitUrl.Repo = strings.TrimSuffix(match[3], ".git")
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.BaseUrl = "https://github.com"
-			gitUrl.SshUrl = fmt.Sprintf("git@github.com:%s/%s.git", match[2], match[3])
-			gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", match[2], match[3])
-			gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", match[2], match[3])
+			gitUrl.SshUrl = fmt.Sprintf("git@github.com:%s/%s.git", gitUrl.Owner, gitUrl.Repo)
+			gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", gitUrl.Owner, gitUrl.Repo)
+			gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
 			gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
 			gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
-			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", match[2], match[3])
+			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.IssuesUrl = fmt.Sprintf("%s/issues", gitUrl.Url)
 			return &gitUrl, nil
 		}
@@ -83,16 +84,17 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 			gitUrl.Protocol = "https"
 			gitUrl.Hostname = match[2]
 			gitUrl.Owner = match[3]
-			gitUrl.Repo = match[4]
+			// 去掉 .git 后缀
+			gitUrl.Repo = strings.TrimSuffix(match[4], ".git")
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.BaseUrl = fmt.Sprintf("https://%s", match[2])
-			gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", match[2], match[3], match[4])
-			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", match[2], match[3], match[4])
-			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", match[2], match[3], match[4])
+			gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", match[2], gitUrl.Owner, gitUrl.Repo)
+			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", match[2], gitUrl.Owner, gitUrl.Repo)
+			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", match[2], gitUrl.Owner, gitUrl.Repo)
 			gitUrl.ActionsUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
 			gitUrl.CommitsUrl = fmt.Sprintf("%s/-/commits", gitUrl.Url)
 			gitUrl.TagsUrl = fmt.Sprintf("%s/-/tags", gitUrl.Url)
-			gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", match[3], match[2], match[4])
+			gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", gitUrl.Owner, match[2], gitUrl.Repo)
 			gitUrl.IssuesUrl = fmt.Sprintf("%s/-/issues", gitUrl.Url)
 			return &gitUrl, nil
 		}

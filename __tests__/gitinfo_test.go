@@ -65,6 +65,15 @@ func TestParseUrl(t *testing.T) {
 			baseUrl:  "https://github.com",
 		},
 		{
+			name:     "GitHub SSH",
+			url:      "git@github.com:aric-jswork/pl.js.work.git",
+			hostname: "github.com",
+			owner:    "aric-jswork",
+			repo:     "pl.js.work",
+			protocol: "https",
+			baseUrl:  "https://github.com",
+		},
+		{
 			name:     "GitHub HTTPS",
 			url:      "https://github.com/afeiship/nx.git",
 			hostname: "github.com",
