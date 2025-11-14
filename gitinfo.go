@@ -36,7 +36,7 @@ func GetGitInfo() (error, *GitInfo) {
 	gitInfo.Hash = hash
 	gitInfo.ShortHash = shortHash
 	gitUrls, _ := ParseGitUrl(originUrl)
-	gitInfo.IsGithub = gitUrls.Hostname == "github.com"
+	gitInfo.IsGithub = strings.Contains(gitUrls.Hostname, "github")
 	gitInfo.Meta = *gitUrls
 
 	return nil, &gitInfo

@@ -101,6 +101,15 @@ func TestParseUrl(t *testing.T) {
 			protocol: "https",
 			baseUrl:  "https://github.work",
 		},
+		{
+			name:     "GitHub Enterprise HTTPS",
+			url:      "https://github.company.com/enterprise/repo.git",
+			hostname: "github.company.com",
+			owner:    "enterprise",
+			repo:     "repo",
+			protocol: "https",
+			baseUrl:  "https://github.company.com",
+		},
 	}
 
 	for _, tt := range tests {
@@ -143,6 +152,60 @@ func TestParseUrl(t *testing.T) {
 	_, err := gitinfo.ParseGitUrl("invalid-url")
 	if err == nil {
 		t.Error("Expected error for invalid URL, got nil")
+	}
+}
+
+func TestGithubDetection(t *testing.T) {
+	tests := []struct {
+		name     string
+		url      string
+		isGithub bool
+	}{
+		{
+			name:     "GitHub.com SSH",
+			url:      "git@github.com:afeiship/nx.git",
+			isGithub: true,
+		},
+		{
+			name:     "GitHub.com HTTPS",
+			url:      "https://github.com/afeiship/nx.git",
+			isGithub: true,
+		},
+		{
+			name:     "GitHub Enterprise SSH",
+			url:      "git@github.work:bosinc/katana-web.git",
+			isGithub: true,
+		},
+		{
+			name:     "GitHub Enterprise HTTPS",
+			url:      "https://github.company.com/enterprise/repo.git",
+			isGithub: true,
+		},
+		{
+			name:     "GitLab SSH",
+			url:      "git@gitlab.com:user/repo.git",
+			isGithub: false,
+		},
+		{
+			name:     "GitLab HTTPS",
+			url:      "https://gitlab.com/user/repo.git",
+			isGithub: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := gitinfo.ParseGitUrl(tt.url)
+			if err != nil {
+				t.Errorf("ParseGitUrl(%s) error = %v", tt.url, err)
+				return
+			}
+
+			isGithub := strings.Contains(info.Hostname, "github")
+			if isGithub != tt.isGithub {
+				t.Errorf("IsGithub = %v, want %v for hostname %s", isGithub, tt.isGithub, info.Hostname)
+			}
+		})
 	}
 }
 
