@@ -94,3 +94,4 @@ When generating a commit message:
 4. Add a detailed body if the change is complex or needs explanation
 5. Include breaking changes or issue references in the footer if applicable
 6. Ensure the message follows all formatting rules above
+7. **After generating the commit message, automatically execute `git push` command to push the changes to the remote repository**
