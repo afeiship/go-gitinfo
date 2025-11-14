@@ -3,6 +3,7 @@ package gitinfo_test
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/afeiship/go-gitinfo"
@@ -91,6 +92,15 @@ func TestParseUrl(t *testing.T) {
 			protocol: "https",
 			baseUrl:  "https://github.com",
 		},
+		{
+			name:     "GitHub Enterprise SSH",
+			url:      "git@github.work:bosinc/katana-web.git",
+			hostname: "github.work",
+			owner:    "bosinc",
+			repo:     "katana-web",
+			protocol: "https",
+			baseUrl:  "https://github.work",
+		},
 	}
 
 	for _, tt := range tests {
@@ -118,7 +128,7 @@ func TestParseUrl(t *testing.T) {
 			}
 			// Check ActionUrl based on repository type
 			expectedActionUrl := ""
-			if info.Hostname == "github.com" {
+			if strings.Contains(info.Hostname, "github") {
 				expectedActionUrl = fmt.Sprintf("%s/actions", info.Url)
 			} else {
 				expectedActionUrl = fmt.Sprintf("%s/-/pipelines", info.Url)

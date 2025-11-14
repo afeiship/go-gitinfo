@@ -24,8 +24,8 @@ type GitUrl struct {
 	BaseUrl     string `json:"base_url"`
 }
 
-var reGithub = regexp.MustCompile(`^(git@github\.com[:/])?([\w.-]+)/([\w.-]+)(\.git)?$`)
-var reGitHubHttps = regexp.MustCompile(`^(https://github\.com/)([\w.-]+)/([\w.-]+)(\.git)?$`)
+var reGithub = regexp.MustCompile(`^(git@([\w.-]+\.(?:com|net|org|io|work|dev|local))[:/])?([\w.-]+)/([\w.-]+)(\.git)?$`)
+var reGitHubHttps = regexp.MustCompile(`^(https://([\w.-]+\.(?:com|net|org|io|work|dev|local))/)([\w.-]+)/([\w.-]+)(\.git)?$`)
 var reGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([.\w-]+)/(.*?)(\.git)?$`)
 var reGitlabHttps = regexp.MustCompile(`^(https://(git\.saybot\.net|lab\.com)/)([\w-]+)/(.*?)(\.git)?$`)
 
@@ -34,33 +34,38 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 	var gitUrl GitUrl
 	gitUrl.OriginalUrl = originalUrl
 
-	// 处理 GitHub
-	if strings.Contains(originalUrl, "github.com") {
+	// 处理 GitHub (包括 GitHub Enterprise)
+	if strings.Contains(originalUrl, "github") || (reGithub.MatchString(originalUrl) || reGitHubHttps.MatchString(originalUrl)) {
 		var match []string
 
 		if strings.HasPrefix(originalUrl, "git@") {
 			match = reGithub.FindStringSubmatch(originalUrl)
-			gitUrl.Protocol = "ssh"
+			gitUrl.Protocol = "https"
 		} else {
 			match = reGitHubHttps.FindStringSubmatch(originalUrl)
 			gitUrl.Protocol = "https"
 		}
 
 		if match != nil {
-			// 如果是 GitHub HTTPS URL
-			gitUrl.Protocol = "https"
-			gitUrl.Hostname = "github.com"
-			gitUrl.Owner = match[2]
+			// 使用动态的主机名
+			gitUrl.Hostname = match[2]
+			gitUrl.Owner = match[3]
 			// 去掉 .git 后缀
-			gitUrl.Repo = strings.TrimSuffix(match[3], ".git")
+			gitUrl.Repo = strings.TrimSuffix(match[4], ".git")
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.BaseUrl = "https://github.com"
-			gitUrl.SshUrl = fmt.Sprintf("git@github.com:%s/%s.git", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
+			gitUrl.BaseUrl = fmt.Sprintf("https://%s", gitUrl.Hostname)
+			gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
+			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
+			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
+			// Actions URL - GitHub uses /actions, GitLab uses /-/pipelines
+			if strings.Contains(gitUrl.Hostname, "github") {
+				gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
+			} else {
+				gitUrl.ActionsUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
+			}
 			gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
 			gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
+			// Pages URL for GitHub Enterprise may differ, keep the same format for now
 			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", gitUrl.Owner, gitUrl.Repo)
 			gitUrl.IssuesUrl = fmt.Sprintf("%s/issues", gitUrl.Url)
 			return &gitUrl, nil
@@ -73,7 +78,7 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 
 		if strings.HasPrefix(originalUrl, "git@") {
 			match = reGitlab.FindStringSubmatch(originalUrl)
-			gitUrl.Protocol = "ssh"
+			gitUrl.Protocol = "https"
 		} else {
 			match = reGitlabHttps.FindStringSubmatch(originalUrl)
 			gitUrl.Protocol = "https"
