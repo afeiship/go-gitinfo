@@ -95,20 +95,20 @@ func TestParseUrl(t *testing.T) {
 		{
 			name:     "GitHub Enterprise SSH",
 			url:      "git@github.work:bosinc/katana-web.git",
-			hostname: "github.work",
+			hostname: "github.com",
 			owner:    "bosinc",
 			repo:     "katana-web",
 			protocol: "https",
-			baseUrl:  "https://github.work",
+			baseUrl:  "https://github.com",
 		},
 		{
 			name:     "GitHub Enterprise HTTPS",
 			url:      "https://github.company.com/enterprise/repo.git",
-			hostname: "github.company.com",
+			hostname: "github.com",
 			owner:    "enterprise",
 			repo:     "repo",
 			protocol: "https",
-			baseUrl:  "https://github.company.com",
+			baseUrl:  "https://github.com",
 		},
 	}
 
@@ -204,6 +204,11 @@ func TestGithubDetection(t *testing.T) {
 			isGithub := strings.Contains(info.Hostname, "github")
 			if isGithub != tt.isGithub {
 				t.Errorf("IsGithub = %v, want %v for hostname %s", isGithub, tt.isGithub, info.Hostname)
+			}
+
+			// 额外验证：所有github相关域名都应该返回github.com
+			if tt.isGithub && info.Hostname != "github.com" {
+				t.Errorf("Expected github.com hostname, got %s for URL %s", info.Hostname, tt.url)
 			}
 		})
 	}

@@ -47,27 +47,38 @@ func ParseGitUrl(originalUrl string) (*GitUrl, error) {
 		}
 
 		if match != nil {
-			// 使用动态的主机名
-			gitUrl.Hostname = match[2]
+			// 使用动态的主机名进行检测，但URL生成统一使用github.com
+			originalHostname := match[2]
 			gitUrl.Owner = match[3]
 			// 去掉 .git 后缀
 			gitUrl.Repo = strings.TrimSuffix(match[4], ".git")
 			gitUrl.RepoName = fmt.Sprintf("%s/%s", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.BaseUrl = fmt.Sprintf("https://%s", gitUrl.Hostname)
-			gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
-			gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
-			gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
-			// Actions URL - GitHub uses /actions, GitLab uses /-/pipelines
-			if strings.Contains(gitUrl.Hostname, "github") {
+
+			// 如果是github相关域名，统一使用github.com
+			if strings.Contains(originalHostname, "github") {
+				gitUrl.Hostname = "github.com"
+				gitUrl.BaseUrl = "https://github.com"
+				gitUrl.SshUrl = fmt.Sprintf("git@github.com:%s/%s.git", gitUrl.Owner, gitUrl.Repo)
+				gitUrl.HttpsUrl = fmt.Sprintf("https://github.com/%s/%s.git", gitUrl.Owner, gitUrl.Repo)
+				gitUrl.Url = fmt.Sprintf("https://github.com/%s/%s", gitUrl.Owner, gitUrl.Repo)
 				gitUrl.ActionsUrl = fmt.Sprintf("%s/actions", gitUrl.Url)
+				gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
+				gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
+				gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", gitUrl.Owner, gitUrl.Repo)
+				gitUrl.IssuesUrl = fmt.Sprintf("%s/issues", gitUrl.Url)
 			} else {
+				// 非github域名保持原有逻辑
+				gitUrl.Hostname = originalHostname
+				gitUrl.BaseUrl = fmt.Sprintf("https://%s", gitUrl.Hostname)
+				gitUrl.SshUrl = fmt.Sprintf("git@%s:%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
+				gitUrl.HttpsUrl = fmt.Sprintf("https://%s/%s/%s.git", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
+				gitUrl.Url = fmt.Sprintf("https://%s/%s/%s", gitUrl.Hostname, gitUrl.Owner, gitUrl.Repo)
 				gitUrl.ActionsUrl = fmt.Sprintf("%s/-/pipelines", gitUrl.Url)
+				gitUrl.CommitsUrl = fmt.Sprintf("%s/-/commits", gitUrl.Url)
+				gitUrl.TagsUrl = fmt.Sprintf("%s/-/tags", gitUrl.Url)
+				gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", gitUrl.Owner, gitUrl.Hostname, gitUrl.Repo)
+				gitUrl.IssuesUrl = fmt.Sprintf("%s/-/issues", gitUrl.Url)
 			}
-			gitUrl.CommitsUrl = fmt.Sprintf("%s/commits", gitUrl.Url)
-			gitUrl.TagsUrl = fmt.Sprintf("%s/tags", gitUrl.Url)
-			// Pages URL for GitHub Enterprise may differ, keep the same format for now
-			gitUrl.PagesUrl = fmt.Sprintf("https://%s.github.io/%s/", gitUrl.Owner, gitUrl.Repo)
-			gitUrl.IssuesUrl = fmt.Sprintf("%s/issues", gitUrl.Url)
 			return &gitUrl, nil
 		}
 	}
