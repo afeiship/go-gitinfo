@@ -24,8 +24,23 @@ type GitUrl struct {
 	BaseUrl     string `json:"base_url"`
 }
 
-var reGithub = regexp.MustCompile(`^(git@([\w.-]+\.(?:com|net|org|io|work|dev|local))[:/])?([\w.-]+)/([\w.-]+)(\.git)?$`)
-var reGitHubHttps = regexp.MustCompile(`^(https://([\w.-]+\.(?:com|net|org|io|work|dev|local))/)([\w.-]+)/([\w.-]+)(\.git)?$`)
+// 域名后缀模式
+const domainSuffix = `(?:com|net|org|io|work|dev|local)`
+// 主机名模式：允许字母、数字、点、连字符，后跟域名后缀
+const hostnamePattern = `[\w.-]+\.` + domainSuffix
+// 用户名/组织名模式
+const ownerPattern = `[\w.-]+`
+// 仓库名模式
+const repoPattern = `[\w.-]+`
+// 可选的 .git 后缀
+const gitSuffix = `(\.git)?`
+
+// GitHub SSH 格式：git@hostname:owner/repo.git
+var reGithub = regexp.MustCompile(
+	`^(git@(` + hostnamePattern + `)[:/])?(` + ownerPattern + `)/(` + repoPattern + `)` + gitSuffix + `$`)
+// GitHub HTTPS 格式：https://hostname/owner/repo.git
+var reGitHubHttps = regexp.MustCompile(
+	`^(https://(` + hostnamePattern + `)/)(` + ownerPattern + `)/(` + repoPattern + `)` + gitSuffix + `$`)
 var reGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([.\w-]+)/(.*?)(\.git)?$`)
 var reGitlabHttps = regexp.MustCompile(`^(https://(git\.saybot\.net|lab\.com)/)([\w-]+)/(.*?)(\.git)?$`)
 
