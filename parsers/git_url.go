@@ -13,9 +13,10 @@ type GitUrl struct {
 	ActionsUrl  string `json:"actions_url"`
 	CommitsUrl  string `json:"commits_url"`
 	TagsUrl     string `json:"tags_url"`
-	PagesUrl    string `json:"pages_url"`
-	IssuesUrl   string `json:"issues_url"`
-	Url         string `json:"url"`
+	PagesUrl       string `json:"pages_url"`
+	IssuesUrl      string `json:"issues_url"`
+	PullRequestsUrl string `json:"pull_requests_url"`
+	Url            string `json:"url"`
 	BaseUrl     string `json:"base_url"`
 }
 

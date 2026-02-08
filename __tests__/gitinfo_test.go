@@ -145,6 +145,17 @@ func TestParseUrl(t *testing.T) {
 			if info.ActionsUrl != expectedActionUrl {
 				t.Errorf("ActionUrl = %v, want %v", info.ActionsUrl, expectedActionUrl)
 			}
+
+			// Check PullRequestsUrl based on repository type
+			expectedPullRequestsUrl := ""
+			if strings.Contains(info.Hostname, "github") {
+				expectedPullRequestsUrl = fmt.Sprintf("%s/pulls", info.Url)
+			} else {
+				expectedPullRequestsUrl = fmt.Sprintf("%s/-/merge_requests", info.Url)
+			}
+			if info.PullRequestsUrl != expectedPullRequestsUrl {
+				t.Errorf("PullRequestsUrl = %v, want %v", info.PullRequestsUrl, expectedPullRequestsUrl)
+			}
 		})
 	}
 

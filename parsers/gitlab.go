@@ -44,6 +44,7 @@ func ParseGitlabUrl(originalUrl string) (*GitUrl, error) {
 	gitUrl.TagsUrl = fmt.Sprintf("%s/-/tags", gitUrl.Url)
 	gitUrl.PagesUrl = fmt.Sprintf("https://%s.pages.%s/%s/", gitUrl.Owner, match[2], gitUrl.Repo)
 	gitUrl.IssuesUrl = fmt.Sprintf("%s/-/issues", gitUrl.Url)
+	gitUrl.PullRequestsUrl = fmt.Sprintf("%s/-/merge_requests", gitUrl.Url)
 
 	return &gitUrl, nil
 }
