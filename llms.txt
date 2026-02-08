@@ -1,0 +1,265 @@
+# go-gitinfo
+> go-gitinfo is a lightweight Go library for extracting Git repository information and parsing Git URLs. It provides a simple API to get current git info (branch, hash, author) and parse various Git URL formats (SSH/HTTPS) for GitHub and GitLab. The library returns structured data with all repository URLs including actions, commits, tags, pages, issues, and pull requests.
+
+**Important notes for agents:**
+- go-gitinfo supports both GitHub and GitLab URL parsing
+- All SSH and HTTPS URL formats are automatically detected and parsed
+- The library works from within a Git repository to extract current state
+- Returns structured JSON with all repository metadata and computed URLs
+- Zero dependencies, pure Go implementation
+- Thread-safe and can be used in concurrent applications
+
+## Documentation
+- [GitHub Repository](https://github.com/afeiship/go-gitinfo): Source code, issues, and releases.
+- [README](https://github.com/afeiship/go-gitinfo/blob/main/README.md): Quick start guide and usage examples.
+- [GoDoc](https://pkg.go.dev/github.com/afeiship/go-gitinfo): Full API documentation and reference.
+
+## Key Features
+- **Get Current Git Info**: Extract current branch, commit hash, author name/email from local repository
+- **Parse Git URLs**: Automatically detect and parse SSH/HTTPS URLs from GitHub and GitLab
+- **URL Generation**: Generate all common repository URLs (SSH, HTTPS, Actions, Commits, Tags, Pages, Issues, Pull Requests)
+- **Multi-Platform Support**: GitHub, GitHub Enterprise, GitLab, and GitLab self-hosted instances
+- **Type Safety**: Full struct definitions with JSON tags for easy serialization
+- **Zero Dependencies**: Pure Go implementation using only standard library
+- **Error Handling**: Clear error messages for invalid URLs or non-git directories
+
+## Installation
+```bash
+go get -u github.com/afeiship/go-gitinfo
+```
+
+## Core APIs
+
+### GetGitInfo() - Get Current Repository Info
+Extracts Git information from the current working directory (must be a Git repository).
+
+```go
+import "github.com/afeiship/go-gitinfo"
+
+func main() {
+    hasGit, info := gitinfo.GetGitInfo()
+    if !hasGit {
+        // Not in a git repository
+        return
+    }
+
+    // Access git info
+    fmt.Println(info.Name)            // Git user name
+    fmt.Println(info.Email)           // Git user email
+    fmt.Println(info.CurrentBranch)   // Current branch name
+    fmt.Println(info.Hash)            // Full commit hash
+    fmt.Println(info.ShortHash)       // Short commit hash (7 chars)
+    fmt.Println(info.IsGithub)        // True if remote is GitHub
+}
+```
+
+### ParseGitUrl() - Parse Git Repository URLs
+Parses any Git repository URL (SSH or HTTPS) and extracts structured information.
+
+```go
+info, err := gitinfo.ParseGitUrl("git@github.com:afeiship/go-gitinfo.git")
+if err != nil {
+    // Handle invalid URL
+    log.Fatal(err)
+}
+
+// Access parsed data
+fmt.Println(info.Hostname)     // "github.com"
+fmt.Println(info.Owner)        // "afeiship"
+fmt.Println(info.Repo)         // "go-gitinfo"
+fmt.Println(info.RepoName)     // "afeiship/go-gitinfo"
+fmt.Println(info.SshUrl)       // "git@github.com:afeiship/go-gitinfo.git"
+fmt.Println(info.HttpsUrl)     // "https://github.com/afeiship/go-gitinfo.git"
+```
+
+## Supported URL Formats
+
+### GitHub URLs
+- SSH: `git@github.com:owner/repo.git`
+- HTTPS: `https://github.com/owner/repo.git`
+- GitHub Enterprise SSH: `git@github.company.com:owner/repo.git`
+- GitHub Enterprise HTTPS: `https://github.company.com/owner/repo.git`
+
+### GitLab URLs
+- SSH: `git@gitlab.com:owner/repo.git`
+- HTTPS: `https://gitlab.com/owner/repo.git`
+- Self-hosted SSH: `git@git.example.com:owner/repo.git`
+- Self-hosted HTTPS: `https://git.example.com/owner/repo.git`
+
+### Nested Paths (GitLab)
+- SSH: `git@gitlab.com:group/subgroup/repo.git`
+- HTTPS: `https://gitlab.com/group/subgroup/repo.git`
+
+## Generated URLs
+
+After parsing a Git URL, the following URLs are automatically generated:
+
+### Base URLs
+- `Url`: Main repository URL (HTTPS)
+- `BaseUrl`: Base URL for the platform
+- `SshUrl`: Git SSH URL for cloning
+- `HttpsUrl`: Git HTTPS URL for cloning
+
+### GitHub URLs
+- `ActionsUrl`: `{repo_url}/actions` - GitHub Actions workflows
+- `CommitsUrl`: `{repo_url}/commits` - Commit history
+- `TagsUrl`: `{repo_url}/tags` - Release tags
+- `PagesUrl`: `https://{owner}.github.io/{repo}/` - GitHub Pages
+- `IssuesUrl`: `{repo_url}/issues` - Issue tracker
+- `PullRequestsUrl`: `{repo_url}/pulls` - Pull requests
+
+### GitLab URLs
+- `ActionsUrl`: `{repo_url}/-/pipelines` - CI/CD pipelines
+- `CommitsUrl`: `{repo_url}/-/commits` - Commit history
+- `TagsUrl`: `{repo_url}/-/tags` - Release tags
+- `PagesUrl`: `https://{owner}.pages.{hostname}/{repo}/` - GitLab Pages
+- `IssuesUrl`: `{repo_url}/-/issues` - Issue tracker
+- `PullRequestsUrl`: `{repo_url}/-/merge_requests` - Merge requests
+
+## Data Structures
+
+### GitInfo - Current Repository State
+```go
+type GitInfo struct {
+    Name          string   // Git user name
+    Email         string   // Git user email
+    CurrentBranch string   // Current branch name
+    Hash          string   // Full commit hash
+    ShortHash     string   // Short commit hash (7 characters)
+    IsGithub      bool     // True if remote is GitHub
+    Meta          GitUrl   // Parsed remote URL information
+}
+```
+
+### GitUrl - Parsed Repository URL
+```go
+type GitUrl struct {
+    OriginalUrl      string // Original input URL
+    Protocol         string // URL protocol (https, ssh)
+    Hostname         string // Normalized hostname (github.com, gitlab.com)
+    Owner            string // Repository owner/group
+    Repo             string // Repository name
+    RepoName         string // Full repo path (owner/repo)
+    SshUrl           string // SSH clone URL
+    HttpsUrl         string // HTTPS clone URL
+    ActionsUrl       string // CI/CD or Actions URL
+    CommitsUrl       string // Commits page URL
+    TagsUrl          string // Tags/releases URL
+    PagesUrl         string // Pages/website URL
+    IssuesUrl        string // Issue tracker URL
+    PullRequestsUrl  string // PR/MR URL
+    Url              string // Main repository URL
+    BaseUrl          string // Base platform URL
+}
+```
+
+## Usage Examples
+
+### Example 1: Display Repository Info
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "github.com/afeiship/go-gitinfo"
+)
+
+func main() {
+    hasGit, info := gitinfo.GetGitInfo()
+    if !hasGit {
+        fmt.Println("Not a git repository")
+        return
+    }
+
+    data, _ := json.MarshalIndent(info, "", "  ")
+    fmt.Println(string(data))
+}
+```
+
+### Example 2: Parse and Generate Links
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/afeiship/go-gitinfo"
+)
+
+func main() {
+    urls := []string{
+        "git@github.com:afeiship/go-gitinfo.git",
+        "https://gitlab.com/gitlab-org/gitlab.git",
+        "git@git.example.com:team/project.git",
+    }
+
+    for _, url := range urls {
+        info, err := gitinfo.ParseGitUrl(url)
+        if err != nil {
+            continue
+        }
+
+        fmt.Printf("Repository: %s\n", info.RepoName)
+        fmt.Printf("  Actions/CI: %s\n", info.ActionsUrl)
+        fmt.Printf("  Pull/Merge Requests: %s\n", info.PullRequestsUrl)
+        fmt.Printf("  Issues: %s\n", info.IssuesUrl)
+    }
+}
+```
+
+### Example 3: Detect Platform
+```go
+package main
+
+import (
+    "fmt"
+    "strings"
+    "github.com/afeiship/go-gitinfo"
+)
+
+func main() {
+    info, _ := gitinfo.ParseGitUrl("git@github.com:owner/repo.git")
+
+    if strings.Contains(info.Hostname, "github") {
+        fmt.Println("This is a GitHub repository")
+        fmt.Println("PRs:", info.PullRequestsUrl) // ends with /pulls
+    } else {
+        fmt.Println("This is a GitLab repository")
+        fmt.Println("MRs:", info.PullRequestsUrl) // ends with /-/merge_requests
+    }
+}
+```
+
+## Usage Notes for Agents
+- **URL Detection**: URL format (SSH/HTTPS) and platform (GitHub/GitLab) are auto-detected
+- **Hostname Normalization**: All GitHub-related domains normalize to `github.com`
+- **Nested Paths**: GitLab nested group paths (e.g., `group/subgroup/repo`) are fully supported
+- **Error Handling**: `ParseGitUrl()` returns error for invalid URLs, `GetGitInfo()` returns bool for git detection
+- **Thread Safety**: Both functions are thread-safe and can be called concurrently
+- **Working Directory**: `GetGitInfo()` operates on current working directory - use `os.Chdir()` if needed
+- **Git Required**: `GetGitInfo()` requires git to be installed and available in PATH
+- **Remote Detection**: `IsGithub` field is `true` only for GitHub-related hosts, not GitLab
+
+## Error Handling
+```go
+// Handle parsing errors
+info, err := gitinfo.ParseGitUrl("not-a-git-url")
+if err != nil {
+    // err.Error() contains descriptive message
+    // e.g., "unable to parse GitHub URL: not-a-git-url"
+}
+
+// Handle non-git directory
+hasGit, info := gitinfo.GetGitInfo()
+if !hasGit {
+    // Current directory is not a git repository
+    // info will be empty/zero values
+}
+```
+
+## Platform-Specific Behavior
+- **GitHub**: Hostnames containing "github" are treated as GitHub (github.com, github.work, github.company.com)
+- **GitLab**: Only explicit GitLab domains (gitlab.com, git.saybot.net) are supported
+- **URL Paths**: GitHub uses `/pulls` for PRs, GitLab uses `/-/merge_requests`
+- **CI/CD**: GitHub uses `/actions`, GitLab uses `/-/pipelines`
+- **Issues**: GitHub uses `/issues`, GitLab uses `/-/issues`
