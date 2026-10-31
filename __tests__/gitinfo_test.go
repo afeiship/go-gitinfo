@@ -225,6 +225,48 @@ func TestGithubDetection(t *testing.T) {
 	}
 }
 
+func TestProxyUrl(t *testing.T) {
+	tests := []struct {
+		name     string
+		url      string
+		hostname string
+		owner    string
+		repo     string
+	}{
+		{
+			name:     "GitHub via ghfast proxy",
+			url:      "https://ghfast.top/https://github.com/afeiship/dotfiles.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "dotfiles",
+		},
+		{
+			name:     "GitHub via ghproxy proxy no .git",
+			url:      "https://mirror.ghproxy.com/https://github.com/afeiship/nx",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := gitinfo.ParseGitUrl(tt.url)
+			if err != nil {
+				t.Errorf("ParseGitUrl(%s) error = %v", tt.url, err)
+				return
+			}
+			if info.Hostname != tt.hostname || info.Owner != tt.owner || info.Repo != tt.repo {
+				t.Errorf("got host=%s owner=%s repo=%s, want %s/%s/%s",
+					info.Hostname, info.Owner, info.Repo, tt.hostname, tt.owner, tt.repo)
+			}
+			if info.HttpsUrl != fmt.Sprintf("https://%s/%s/%s.git", tt.hostname, tt.owner, tt.repo) {
+				t.Errorf("HttpsUrl = %v", info.HttpsUrl)
+			}
+		})
+	}
+}
+
 func TestGetGitInfo(f *testing.T) {
 	_, info := gitinfo.GetGitInfo()
 	jsonInfo, _ := json.Marshal(info)

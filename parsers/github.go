@@ -8,6 +8,15 @@ import (
 // ParseGithubUrl parses GitHub and GitHub Enterprise URLs
 func ParseGithubUrl(originalUrl string) (*GitUrl, error) {
 	var gitUrl GitUrl
+
+	// Strip proxy prefix: https://ghfast.top/https://github.com/... -> https://github.com/...
+	// A proxy URL embeds the real URL after its first "/", so keep the last https:// (or git@) onward.
+	if idx := strings.LastIndex(originalUrl, "https://"); idx > 0 {
+		originalUrl = originalUrl[idx:]
+	} else if idx := strings.LastIndex(originalUrl, "git@"); idx > 0 {
+		originalUrl = originalUrl[idx:]
+	}
+
 	gitUrl.OriginalUrl = originalUrl
 
 	// Check if it's a GitHub URL
