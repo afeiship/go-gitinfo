@@ -26,8 +26,8 @@ var ReGitHubHttps = regexp.MustCompile(
 	`^(https://(` + hostnamePattern + `)/)(` + ownerPattern + `)/(` + repoPattern + `)` + gitSuffix + `$`)
 
 // ReGitlab matches GitLab SSH format: git@hostname:owner/repo.git
-var ReGitlab = regexp.MustCompile(`^(git@(git\.saybot\.net|lab\.com)[:/])?([.\w-]+)/(.*?)(\.git)?$`)
+var ReGitlab = regexp.MustCompile(`^(git@(` + hostnamePattern + `)[:/])?(` + ownerPattern + `)/(.*?)(\.git)?$`)
 
 // ReGitlabHttps matches GitLab HTTPS format: https://hostname/owner/repo.git
-var ReGitlabHttps = regexp.MustCompile(`^(https://(git\.saybot\.net|lab\.com)/)([\w-]+)/(.*?)(\.git)?$`)
+var ReGitlabHttps = regexp.MustCompile(`^(https://(` + hostnamePattern + `)/)(` + ownerPattern + `)/(.*?)(\.git)?$`)
 

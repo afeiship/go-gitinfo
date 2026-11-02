@@ -35,7 +35,10 @@ func GetGitInfo() (error, *GitInfo) {
 	gitInfo.CurrentBranch = currentBranch
 	gitInfo.Hash = hash
 	gitInfo.ShortHash = shortHash
-	gitUrls, _ := ParseGitUrl(originUrl)
+	gitUrls, err := ParseGitUrl(originUrl)
+	if err != nil {
+		return err, &gitInfo
+	}
 	gitInfo.IsGithub = strings.Contains(gitUrls.Hostname, "github")
 	gitInfo.Meta = *gitUrls
 
