@@ -272,3 +272,111 @@ func TestGetGitInfo(f *testing.T) {
 	jsonInfo, _ := json.Marshal(info)
 	fmt.Println("jsonInfo: ", string(jsonInfo))
 }
+
+func TestUserInfoUrl(t *testing.T) {
+	tests := []struct {
+		name     string
+		url      string
+		hostname string
+		owner    string
+		repo     string
+	}{
+		{
+			name:     "HTTPS with username on self-hosted",
+			url:      "https://td@git.luca-ai-bio.com/elp/teacher-desktop.git",
+			hostname: "git.luca-ai-bio.com",
+			owner:    "elp",
+			repo:     "teacher-desktop",
+		},
+		{
+			name:     "HTTPS with username and token",
+			url:      "https://td:s3cr3t@git.luca-ai-bio.com/elp/teacher-desktop.git",
+			hostname: "git.luca-ai-bio.com",
+			owner:    "elp",
+			repo:     "teacher-desktop",
+		},
+		{
+			name:     "GitHub HTTPS with username",
+			url:      "https://td@github.com/afeiship/nx.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+		},
+		{
+			name:     "GitHub HTTPS with username and token",
+			url:      "https://td:s3cr3t@github.com/afeiship/nx.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "nx",
+		},
+		{
+			name:     "GitLab HTTPS with username, nested group",
+			url:      "https://td@gitlab.com/group/sub/repo.git",
+			hostname: "gitlab.com",
+			owner:    "group",
+			repo:     "sub/repo",
+		},
+		{
+			name:     "Proxy URL with username",
+			url:      "https://td@ghfast.top/https://github.com/afeiship/dotfiles.git",
+			hostname: "github.com",
+			owner:    "afeiship",
+			repo:     "dotfiles",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := gitinfo.ParseGitUrl(tt.url)
+			if err != nil {
+				t.Errorf("ParseGitUrl(%s) error = %v", tt.url, err)
+				return
+			}
+			if info.Hostname != tt.hostname {
+				t.Errorf("Hostname = %v, want %v", info.Hostname, tt.hostname)
+			}
+			if info.Owner != tt.owner {
+				t.Errorf("Owner = %v, want %v", info.Owner, tt.owner)
+			}
+			if info.Repo != tt.repo {
+				t.Errorf("Repo = %v, want %v", info.Repo, tt.repo)
+			}
+			if info.RepoName != fmt.Sprintf("%s/%s", tt.owner, tt.repo) {
+				t.Errorf("RepoName = %v, want %v", info.RepoName, fmt.Sprintf("%s/%s", tt.owner, tt.repo))
+			}
+			if strings.Contains(info.HttpsUrl, "@") {
+				t.Errorf("HttpsUrl contains credentials: %v", info.HttpsUrl)
+			}
+		})
+	}
+
+	regressions := []struct {
+		name     string
+		url      string
+		hostname string
+	}{
+		{
+			name:     "SCP format keeps working",
+			url:      "git@github.com:afeiship/nx.git",
+			hostname: "github.com",
+		},
+		{
+			name:     "SSH URL keeps working",
+			url:      "ssh://git@github.com/afeiship/nx.git",
+			hostname: "github.com",
+		},
+	}
+
+	for _, tt := range regressions {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := gitinfo.ParseGitUrl(tt.url)
+			if err != nil {
+				t.Errorf("ParseGitUrl(%s) error = %v", tt.url, err)
+				return
+			}
+			if info.Hostname != tt.hostname {
+				t.Errorf("Hostname = %v, want %v", info.Hostname, tt.hostname)
+			}
+		})
+	}
+}
